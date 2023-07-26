@@ -33,7 +33,7 @@ public class GAmovement {
 
     //change these if you don't want to use config every time you write a new thing
     public GAmovement (HardwareMap hardwareMap) {
-        GAlocalization localization = new GAlocalization(hardwareMap);
+     //   GAlocalization localization = new GAlocalization(hardwareMap);
         fl = hardwareMap.get(DcMotorEx.class, "front left");
         fr = hardwareMap.get(DcMotorEx.class, "front right");
         bl = hardwareMap.get(DcMotorEx.class, "back left");
@@ -85,8 +85,8 @@ public class GAmovement {
             int currentMethod = Integer.parseInt(instructionList.get(MethodsThisState.get(i)));
             switch(currentMethod) {
                 case 1:
-                    boolean t = runToTicks(Integer.parseInt(instructionList.get(MethodsThisState.get(i) + 1)), Integer.parseInt(instructionList.get(MethodsThisState.get(i) + 2)));
-                    if (t) {State ++; telem = "yaaaaaasaaaaasay";} else {telem = "noooooo";}
+               //     boolean t = runToTicks(Integer.parseInt(instructionList.get(MethodsThisState.get(i) + 1)), Integer.parseInt(instructionList.get(MethodsThisState.get(i) + 2)));
+                 //   if (t) {State ++; telem = "yaaaaaasaaaaasay";} else {telem = "noooooo";}
                     break;
             }
         }
@@ -97,45 +97,45 @@ public class GAmovement {
     public static void start () {
         State = 0;
     }
-    public static boolean runToTicks(int distX, int distY) {
-        if (State < 0) {
-            telem = "nope" + State;
-            addToList(1, 2);
-            instructionList.add(String.valueOf(distX));
-            instructionList.add(String.valueOf(distY));
-            return false;
-        }
-        double X;
-        double Y;
-        if (Math.round(Math.abs(GAlocalization.coordinates()[0]/100)) < Math.round((float)Math.abs(distX)/100)) {
-            if (GAlocalization.coordinates()[0] < distX) {
-                X = 0.5;
-            } else {
-                X = -0.5;
-            }
-        } else {
-            X = 0;
-        }
-        if (Math.round(Math.abs(GAlocalization.coordinates()[1]/100)) < Math.round((float)Math.abs(distY)/100)) {
-            if (GAlocalization.coordinates()[1] < distY) {
-                Y = 0.5;
-            } else {
-                Y = -0.5;
-            }
-        } else {
-            Y = 0;
-        }
-        telem = "X:" + X + "y:" + Y + "0" + GAlocalization.coordinates()[0] + "1" + GAlocalization.coordinates()[1];
-        fl.setPower(Y + X);
-        bl.setPower(Y - X);
-        fr.setPower(Y - X);
-        br.setPower(Y + X);
-
-        return true;
-    }
-    public static String getTelemetry() {
-        return telem;
-    }
+//    public static boolean runToTicks(int distX, int distY) {
+//        if (State < 0) {
+//            telem = "nope" + State;
+//            addToList(1, 2);
+//            instructionList.add(String.valueOf(distX));
+//            instructionList.add(String.valueOf(distY));
+//            return false;
+//        }
+//        double X;
+//        double Y;
+//        if (Math.round(Math.abs(GAlocalization.coordinates()[0]/100)) < Math.round((float)Math.abs(distX)/100)) {
+//            if (GAlocalization.coordinates()[0] < distX) {
+//                X = 0.5;
+//            } else {
+//                X = -0.5;
+//            }
+//        } else {
+//            X = 0;
+//        }
+//       // if (Math.round(Math.abs(GAlocalization.coordinates()[1]/100)) < Math.round((float)Math.abs(distY)/100)) {
+//         //   if (GAlocalization.coordinates()[1] < distY) {
+//                Y = 0.5;
+//            } else {
+//                Y = -0.5;
+//            }
+//        } else {
+//            Y = 0;
+//        }
+//        telem = "X:" + X + "y:" + Y + "0" + GAlocalization.coordinates()[0] + "1" + GAlocalization.coordinates()[1];
+//        fl.setPower(Y + X);
+//        bl.setPower(Y - X);
+//        fr.setPower(Y - X);
+//        br.setPower(Y + X);
+//
+//        return true;
+//    }
+//    public static String getTelemetry() {
+//        return telem;
+//    }
     private static void addToList(int instrcuctionID, int variableSpaceRequired) {
         instructionList.add(String.valueOf(instrcuctionID));
         for (int i = 0; i < variableSpaceRequired; i++) {

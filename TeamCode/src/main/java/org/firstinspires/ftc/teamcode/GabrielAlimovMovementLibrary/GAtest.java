@@ -12,18 +12,24 @@ public abstract class GAtest {
     DcMotorEx bl;
     DcMotorEx br;
     IMU Imu;
-    public void GAtestInit (DcMotorEx front_left, DcMotorEx front_right, DcMotorEx back_left, DcMotorEx back_right, IMU imu) {
+    GAstate s = new GAstate();
+    GAlocalization localization;
+    public final void GAtestInit (DcMotorEx front_left, DcMotorEx front_right, DcMotorEx back_left, DcMotorEx back_right, IMU imu, DcMotorEx X_axis_odometer, DcMotorEx Y_axis_odometer) {
         fl = front_left;
         fr = front_right;
         bl = back_left;
         br = back_right;
         Imu = imu;
+        localization = new GAlocalization(imu, X_axis_odometer, Y_axis_odometer);
     }
-    public String test(int blah){
-        return "this is a test method";
-    };
-    public abstract int instructions();
-    public void test3() {
-        test(1).isEmpty();
+    public static boolean autoConstructor (final int t) {
+        return true;
+    }
+
+    public final void update () {
+        s.machine(autoConstructor(s.state()));
+    }
+    private void refs () {
+
     }
 }

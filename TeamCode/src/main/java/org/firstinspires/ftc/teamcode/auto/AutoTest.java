@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.GabrielAlimovMovementLibrary.GAtest;
 
 public class AutoTest extends LinearOpMode {
@@ -23,8 +22,10 @@ public class AutoTest extends LinearOpMode {
         imu = hardwareMap.get(IMU.class, "imu");
 
         AutoBuider builder = new AutoBuider();
-        builder.GAtestInit(fl, fr, bl, br, imu);
-        builder.test3();
+        builder.GAtestInit(fl, fr, bl, br, imu, bl, fl);
+        while (!isStopRequested()) {
+            builder.update();
+        }
     }
     public IMU imumethod () {
         return imu;
@@ -35,26 +36,12 @@ class funnyClass {
 }
 class AutoBuider extends GAtest {
     AutoTest t = new AutoTest();
-    public String test(int meow) {
-        switch ((int) t.imumethod().getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)) {
-            case 1:
-                break;
-        }
-        return "";
-    }
 
-    @Override
-    public int instructions() {
-        return 0;
-    }
-    public int instructions(int state) {
-        switch (state) {
+    public static boolean autoConstructor (int f) {
+        switch (f) {
             case 0:
-                break;
-            case 1:
-                break;
-            //etc
+                return true;
         }
-        return 0;
+        return true;
     }
 }
