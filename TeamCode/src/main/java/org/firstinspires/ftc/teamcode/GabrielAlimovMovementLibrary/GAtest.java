@@ -22,7 +22,7 @@ public abstract class GAtest {
     public String test(int blah){
         return "this is a test method";
     };
-    public abstract int test2();
+    public abstract int instructions();
     public void test3() {
         test(1).isEmpty();
     }

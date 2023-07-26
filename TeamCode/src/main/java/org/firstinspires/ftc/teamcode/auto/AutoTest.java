@@ -24,7 +24,6 @@ public class AutoTest extends LinearOpMode {
 
         AutoBuider builder = new AutoBuider();
         builder.GAtestInit(fl, fr, bl, br, imu);
-        telemetry.addData("", builder.test2());
         builder.test3();
     }
     public IMU imumethod () {
@@ -45,7 +44,17 @@ class AutoBuider extends GAtest {
     }
 
     @Override
-    public int test2() {
+    public int instructions() {
+        return 0;
+    }
+    public int instructions(int state) {
+        switch (state) {
+            case 0:
+                break;
+            case 1:
+                break;
+            //etc
+        }
         return 0;
     }
 }
