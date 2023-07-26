@@ -1,61 +1,54 @@
 package org.firstinspires.ftc.teamcode.GabrielAlimovMovementLibrary;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.checkerframework.checker.units.qual.A;
-
 public class GAmovement {
-    String telem;
-    DcMotorEx fl;
-    DcMotorEx fr;
-    DcMotorEx bl;
-    DcMotorEx br;
+    static String telem;
+    static DcMotorEx fl;
+    static DcMotorEx fr;
+    static DcMotorEx bl;
+    static DcMotorEx br;
     DcMotorEx xOdo;
     DcMotorEx yOdo;
-    int State = -1;
-    List<String> instructionList = new ArrayList<String>();
-    List<Integer> orderList = new ArrayList<Integer>();
+    static int State = -1;
+    static List<String> instructionList = new ArrayList<String>();
+    static List<Integer> orderList = new ArrayList<Integer>();
     List<Integer> intInputCache = new ArrayList<Integer>();
     List<Integer> intInputCacheIDs = new ArrayList<Integer>();
     List<Integer> IDList = new ArrayList<Integer>();
     int intInputCacheTracker = 0;
-    int order = 0;
+    static int order = 0;
     int ID = 0;
     int IDtracker = 0;
     String intString;
+    MecanumDrive drivetrain;
 
     //change these if you don't want to use config every time you write a new thing
     public GAmovement (HardwareMap hardwareMap) {
+        GAlocalization localization = new GAlocalization(hardwareMap);
         fl = hardwareMap.get(DcMotorEx.class, "front left");
         fr = hardwareMap.get(DcMotorEx.class, "front right");
         bl = hardwareMap.get(DcMotorEx.class, "back left");
         br = hardwareMap.get(DcMotorEx.class, "back right");
 
-        fr.setDirection(DcMotor.Direction.REVERSE);
-        br.setDirection(DcMotor.Direction.REVERSE);
-        fl.setDirection(DcMotorSimple.Direction.FORWARD);
-        bl.setDirection(DcMotorSimple.Direction.FORWARD);
-        fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fr.setDirection(DcMotorSimple.Direction.REVERSE);
+        br.setDirection(DcMotorSimple.Direction.REVERSE);
         fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        fr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        br.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         fl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        fr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         bl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+        br.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         xOdo = bl;
         yOdo = fl;
@@ -92,19 +85,19 @@ public class GAmovement {
             int currentMethod = Integer.parseInt(instructionList.get(MethodsThisState.get(i)));
             switch(currentMethod) {
                 case 1:
-                    runToTicks(Integer.parseInt(instructionList.get(MethodsThisState.get(i) + 1)), Integer.parseInt(instructionList.get(MethodsThisState.get(i) + 2)));
+                    boolean t = runToTicks(Integer.parseInt(instructionList.get(MethodsThisState.get(i) + 1)), Integer.parseInt(instructionList.get(MethodsThisState.get(i) + 2)));
+                    if (t) {State ++; telem = "yaaaaaasaaaaasay";} else {telem = "noooooo";}
+                    break;
             }
         }
     }
-    public void intString (int Integer) {
-        if (State < 0) {
-            addToList(0, 1);
-            instructionList.add(String.valueOf(Integer));
-        }
-        intString = intString + Integer;
-        telem = intString;
+//    protected Motor[] ginit () {
+//        return new Motor[]{xOdo, yOdo};
+//    }
+    public static void start () {
+        State = 0;
     }
-    public boolean runToTicks (int distX, int distY) {
+    public static boolean runToTicks(int distX, int distY) {
         if (State < 0) {
             telem = "nope" + State;
             addToList(1, 2);
@@ -112,47 +105,38 @@ public class GAmovement {
             instructionList.add(String.valueOf(distY));
             return false;
         }
-        int xPos = xOdo.getCurrentPosition();
-        int yPos = yOdo.getCurrentPosition();
-        boolean xAbs = Math.abs(xPos) < Math.abs(distX);
-        boolean yAbs = Math.abs(yPos) < Math.abs(distY);
-        telem = "Y: " + yOdo.getCurrentPosition() + "\nX: " + xOdo.getCurrentPosition() + "\nState: " + State;
-
-        xPos = xOdo.getCurrentPosition();
-        yPos = yOdo.getCurrentPosition();
-        int Y = 0;
-        int X = 0;
-        if (xAbs) {
-            if (distX - xPos < 0) {
-                X = -1;
-            } else if (distX - xPos > 0) {
-                X = 1;
+        double X;
+        double Y;
+        if (Math.round(Math.abs(GAlocalization.coordinates()[0]/100)) < Math.round((float)Math.abs(distX)/100)) {
+            if (GAlocalization.coordinates()[0] < distX) {
+                X = 0.5;
+            } else {
+                X = -0.5;
             }
+        } else {
+            X = 0;
         }
-        if (yAbs) {
-            if (distY - yPos < 0) {
-                Y = -1;
-            } else if (distY - yPos > 0) {
-                Y = 1;
+        if (Math.round(Math.abs(GAlocalization.coordinates()[1]/100)) < Math.round((float)Math.abs(distY)/100)) {
+            if (GAlocalization.coordinates()[1] < distY) {
+                Y = 0.5;
+            } else {
+                Y = -0.5;
             }
+        } else {
+            Y = 0;
         }
+        telem = "X:" + X + "y:" + Y + "0" + GAlocalization.coordinates()[0] + "1" + GAlocalization.coordinates()[1];
         fl.setPower(Y + X);
         bl.setPower(Y - X);
         fr.setPower(Y - X);
         br.setPower(Y + X);
-        if (!yAbs || !xAbs) {
-            telem = "out";
-            return true;
-        }
 
-        State ++;
-        telem = "next";
         return true;
     }
-    public String getTelemetry () {
+    public static String getTelemetry() {
         return telem;
     }
-    private void addToList(int instrcuctionID, int variableSpaceRequired) {
+    private static void addToList(int instrcuctionID, int variableSpaceRequired) {
         instructionList.add(String.valueOf(instrcuctionID));
         for (int i = 0; i < variableSpaceRequired; i++) {
             orderList.add(-1);

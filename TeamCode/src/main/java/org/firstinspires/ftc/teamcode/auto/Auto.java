@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.teamcode.GabrielAlimovMovementLibrary.GAlocalization;
 import org.firstinspires.ftc.teamcode.GabrielAlimovMovementLibrary.GAmovement;
 import org.firstinspires.ftc.teamcode.util.drivetrain;
 import org.firstinspires.ftc.teamcode.util.seek;
@@ -16,11 +17,12 @@ public class Auto extends LinearOpMode {
         seek seek = new seek();
         waitForStart();
         GAmovement move = new GAmovement(hardwareMap);
-        move.intString(1);
-        move.intString(5);
-        while (!isStopRequested()) {
-            move.update();
-            telemetry.addData("GAtelemetry", move.getTelemetry());
+        GAmovement.start();
+        GAlocalization.resetEncoders();
+        while(!isStopRequested()) {
+            GAlocalization.resetEncoders();
+            GAmovement.runToTicks(0,1000);
+            telemetry.addData("GA", GAmovement.getTelemetry());
             telemetry.update();
         }
     }
