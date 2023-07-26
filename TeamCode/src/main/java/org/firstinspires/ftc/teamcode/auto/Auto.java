@@ -21,8 +21,8 @@ public class Auto extends LinearOpMode {
        // GAlocalization.resetEncoders();
         while(!isStopRequested()) {
      //       GAlocalization.resetEncoders();
-            GAmovement.runToTicks(0,1000);
-            telemetry.addData("GA", GAmovement.getTelemetry());
+           // GAmovement.runToTicks(0,1000);
+            //telemetry.addData("GA", GAmovement.getTelemetry());
             telemetry.update();
         }
     }

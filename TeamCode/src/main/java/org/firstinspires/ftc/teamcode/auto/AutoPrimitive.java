@@ -11,7 +11,9 @@ public class AutoPrimitive extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         GAprimitive ga = new GAprimitive(hardwareMap);
         waitForStart();
-        ga.encodeTo(1000, 0);
-        while (!isStopRequested()){}
+        while (!isStopRequested()){
+            telemetry.addData(ga.telemetric(1000, 0), "");
+            telemetry.update();
+        }
     }
 }

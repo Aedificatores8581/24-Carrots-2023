@@ -15,8 +15,8 @@ public class TeleTankDrive extends LinearOpMode {
     DcMotorEx fr;
     DcMotorEx bl;
     DcMotorEx br;
-    Motor sl;
-    Motor sr;
+    DcMotorEx sl;
+    DcMotorEx sr;
     Servo claw;
 
     @Override
@@ -29,13 +29,11 @@ public class TeleTankDrive extends LinearOpMode {
         fr.setDirection(DcMotor.Direction.REVERSE);
         br.setDirection(DcMotor.Direction.REVERSE);
 
-        sl = hardwareMap.get(Motor.class, "slide1");
-        sr = hardwareMap.get(Motor.class, "slide2");
+        sl = hardwareMap.get(DcMotorEx.class, "slide1");
+        sr = hardwareMap.get(DcMotorEx.class, "slide2");
 
-        sl.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        sr.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-
-        MotorGroup slide = new MotorGroup(sl, sr);
+        sl.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        sr.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         claw = hardwareMap.get(Servo.class, "claw");
 
@@ -52,11 +50,14 @@ public class TeleTankDrive extends LinearOpMode {
             float ly = gamepad1.left_stick_y;
             float ry = gamepad1.right_stick_y;
             float Ytotal =(ly + ry )/2;
-
+            float pivot = 0;
+/*
             fl.setPower(ly);
             bl.setPower(ly);
             br.setPower(ry);
             fr.setPower(ry);
+
+ */
 
             float lx = gamepad1.left_stick_x;
             float rx = gamepad1.right_stick_x;
@@ -91,26 +92,37 @@ public class TeleTankDrive extends LinearOpMode {
                fr.setPower(-.5);
             }
 */
-            fl.setPower(Ytotal - Xtotal);
-            bl.setPower((Ytotal + Xtotal));
-            fr.setPower(Ytotal + Xtotal);
-            br.setPower(Ytotal - Xtotal);
+            fl.setPower(-pivot + Ytotal - Xtotal);
+            bl.setPower(-pivot +Ytotal + Xtotal);
+            fr.setPower(pivot +Ytotal + Xtotal);
+            br.setPower( pivot +Ytotal - Xtotal);
+
+            if (ly >= .80 && ry <= .80){
+                pivot = -1;
+            }
+
+            if (ry >= .80 && ly <= .80){
+                pivot = 1;
+            }
 
 
 
 
-
-            fl.setPower(ly);
+/*            fl.setPower(ly);
             bl.setPower(ly);
             br.setPower(ry);
             fr.setPower(ry);
+ */
 
             if (y) {
-                slide.set(-0.7);
+                sl.setPower(-0.7);
+                sr.setPower(-0.7);
             } else if (x) {
-                slide.set(0.7);
+                sl.setPower(0.7);
+                sr.setPower(0.7);
             } else {
-                slide.set(0);
+                sl.setPower(0);
+                sr.setPower(0);
             }
             if (a) {
                 clawpos = 0.46;
