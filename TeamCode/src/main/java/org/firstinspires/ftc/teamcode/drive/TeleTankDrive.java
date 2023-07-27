@@ -92,11 +92,6 @@ public class TeleTankDrive extends LinearOpMode {
                fr.setPower(-.5);
             }
 */
-            fl.setPower(-pivot + Ytotal - Xtotal);
-            bl.setPower(-pivot +Ytotal + Xtotal);
-            fr.setPower(pivot +Ytotal + Xtotal);
-            br.setPower( pivot +Ytotal - Xtotal);
-
             if (ly >= .80 && ry <= .80){
                 pivot = -1;
             }
@@ -105,7 +100,10 @@ public class TeleTankDrive extends LinearOpMode {
                 pivot = 1;
             }
 
-
+            fl.setPower(-pivot + Ytotal - Xtotal);
+            bl.setPower(-pivot +Ytotal + Xtotal);
+            fr.setPower(pivot +Ytotal + Xtotal);
+            br.setPower( pivot +Ytotal - Xtotal);
 
 
 /*            fl.setPower(ly);
