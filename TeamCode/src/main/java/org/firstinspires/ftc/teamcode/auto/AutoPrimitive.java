@@ -49,11 +49,11 @@ public class AutoPrimitive extends LinearOpMode {
         sr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         ga.encodeTo(3000,0);
         ga.turn(85);
-        ga.encodeTo(0, -59000);
+        ga.encodeTo(0, -61000);
         telemetry.addData("goo goo", "ga ga");
         telemetry.update();
         sr.setTargetPositionTolerance(800);
-        sr.setTargetPosition(-2500);
+        sr.setTargetPosition(-2800);
         sr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         sr.setPower(-0.4);
         while (sr.isBusy()) {
@@ -64,7 +64,7 @@ public class AutoPrimitive extends LinearOpMode {
         sl.setPower(0);
         sr.setPower(0);
         sr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        ga.encodeTo(5000, 0);
+        ga.encodeTo(450, 0);
         telemetry.addData(ga.telemetric(),"");
         telemetry.addData(ga.telemetric(), "beep boop");
         telemetry.update();

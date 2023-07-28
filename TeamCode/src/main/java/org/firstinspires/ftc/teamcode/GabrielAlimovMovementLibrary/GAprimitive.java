@@ -67,7 +67,7 @@ public class GAprimitive {
         double X = 0;
         double Y = 0;
         while (Math.abs(forward) > Math.abs(yOdo.getCurrentPosition())-Yadjustment || Math.abs(strafe) > Math.abs(xOdo.getCurrentPosition())-Xadjustment) {
-            if (Math.abs(forward) > Math.abs(yOdo.getCurrentPosition())-Yadjustment && forward != 0 && !(Math.abs(yOdo.getCurrentPosition())-Yadjustment <= 0)) {
+            if (Math.abs(forward) > Math.abs(yOdo.getCurrentPosition())-Yadjustment && forward != 0) {
                 if (fNegative) {
                     Y = 0.5;
                 } else {
@@ -76,7 +76,7 @@ public class GAprimitive {
             } else {
                 Y = 0;
             }
-            if (Math.abs(strafe) > Math.abs(xOdo.getCurrentPosition())-Xadjustment && strafe != 0 && !(Math.abs(xOdo.getCurrentPosition())-Xadjustment <= 0)) {
+            if (Math.abs(strafe) > Math.abs(xOdo.getCurrentPosition())-Xadjustment && strafe != 0) {
                 if (sNegative) {
                     X = 0.5;
                 } else {
@@ -94,6 +94,7 @@ public class GAprimitive {
                 bl.setPower(0);
                 fr.setPower(0);
                 br.setPower(0);
+                telem = "fuck you";
                 return;
             }
         }
