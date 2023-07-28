@@ -91,10 +91,10 @@ public class Tele2 extends LinearOpMode {
             x_local = X * Math.cos(-heading) - Y * Math.sin(-heading);
             y_local = X * Math.sin(-heading) + Y * Math.cos(-heading);
 
-            fl.setPower(pivot + y_local + x_local);
-            bl.setPower(pivot + (y_local - x_local));
-            fr.setPower(-pivot + (y_local - x_local));
-            br.setPower(-pivot + y_local + x_local);
+            fl.setPower(-pivot + y_local + x_local);
+            bl.setPower(-pivot + (y_local - x_local));
+            fr.setPower(pivot + (y_local - x_local));
+            br.setPower(pivot + y_local + x_local);
 
             if (y) {
                 sl.setPower(-0.7);

@@ -66,6 +66,8 @@ public class GAprimitive {
         }
         double X = 0;
         double Y = 0;
+        double Ytracker = 0;
+        double Xtracker = 0;
         while (Math.abs(forward) > Math.abs(yOdo.getCurrentPosition())-Yadjustment || Math.abs(strafe) > Math.abs(xOdo.getCurrentPosition())-Xadjustment) {
             if (Math.abs(forward) > Math.abs(yOdo.getCurrentPosition())-Yadjustment && forward != 0) {
                 if (fNegative) {
@@ -76,6 +78,7 @@ public class GAprimitive {
             } else {
                 Y = 0;
             }
+            Ytracker += Y * 2;
             if (Math.abs(strafe) > Math.abs(xOdo.getCurrentPosition())-Xadjustment && strafe != 0) {
                 if (sNegative) {
                     X = 0.5;
@@ -85,6 +88,7 @@ public class GAprimitive {
             } else {
                 X = 0;
             }
+            Xtracker += X * 2;
             fl.setPower(Y + X);
             bl.setPower(Y - X);
             fr.setPower(Y - X);
@@ -94,7 +98,7 @@ public class GAprimitive {
                 bl.setPower(0);
                 fr.setPower(0);
                 br.setPower(0);
-                telem = "fuck you";
+                telem = Xtracker + "\n" + Ytracker + "\n" + "yeehaw";
                 return;
             }
         }
@@ -102,6 +106,7 @@ public class GAprimitive {
         bl.setPower(0);
         fr.setPower(0);
         br.setPower(0);
+        telem = Xtracker + "\n" + Ytracker + "\n" + "yeehaw";
     }
     public static String telemetric () {
         return telem;

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.GabrielAlimovMovementLibrary.GAprimitive;
+import org.firstinspires.ftc.teamcode.util.SleeveDetection;
 
 @Autonomous
 public class AutoPrimitive extends LinearOpMode {
@@ -15,8 +16,11 @@ public class AutoPrimitive extends LinearOpMode {
     DcMotorEx sr;
     Servo claw;
     DigitalChannel limitswitch;
+    SleeveDetection detector = new SleeveDetection();
     @Override
     public void runOpMode() throws InterruptedException {
+        SleeveDetection.ParkingPosition location = detector.getPosition();
+
         sl = hardwareMap.get(DcMotorEx.class, "slide1");
         sr = hardwareMap.get(DcMotorEx.class, "slide2");
 
@@ -48,9 +52,11 @@ public class AutoPrimitive extends LinearOpMode {
         sr.setPower(0);
         sr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         ga.encodeTo(3000,0);
+        telemetry.addLine(ga.telemetric());
+        telemetry.update();
         ga.turn(85);
         ga.encodeTo(0, -61000);
-        telemetry.addData("goo goo", "ga ga");
+        telemetry.addLine(ga.telemetric());
         telemetry.update();
         sr.setTargetPositionTolerance(800);
         sr.setTargetPosition(-2800);
@@ -64,25 +70,28 @@ public class AutoPrimitive extends LinearOpMode {
         sl.setPower(0);
         sr.setPower(0);
         sr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        ga.encodeTo(450, 0);
-        telemetry.addData(ga.telemetric(),"");
-        telemetry.addData(ga.telemetric(), "beep boop");
+        ga.encodeTo(300, 0);
+        telemetry.addLine(ga.telemetric());
         telemetry.update();
-        sr.setTargetPositionTolerance(300);
-        sr.setTargetPosition(-1500);
-        sr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        sr.setPower(0.4);
-        while (sr.isBusy()) {
-            sl.setPower(0.4);
-            telemetry.addData("sliding", "mother");
-            telemetry.update();
-        }
-        sl.setPower(0);
-        sr.setPower(0);
-        sr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        sr.setTargetPositionTolerance(300);
+//        sr.setTargetPosition(-1500);
+//        sr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        sr.setPower(0.4);
+//        while (sr.isBusy()) {
+//            sl.setPower(0.4);
+//            telemetry.addData("sliding", "mother");
+//            telemetry.update();
+//        }
+//        sl.setPower(0);
+//        sr.setPower(0);
+//        sr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         telemetry.addData("funny robot", "beep beep");
         telemetry.update();
         claw.setPosition(0.46);
+        ga.encodeTo(-100, 0);
+        telemetry.addLine(ga.telemetric());
+        telemetry.update();
+        ga.encodeTo(0, 1000);
 //        sl.setPower(-0.4);
 //        sr.setPower(-0.4);
 //        while (sr.getCurrentPosition()<200) {
@@ -91,10 +100,21 @@ public class AutoPrimitive extends LinearOpMode {
 //        }
 //        sl.setPower(0);
 //        sr.setPower(0);
+        if (location == SleeveDetection.ParkingPosition.CENTER) {
+            ga.encodeTo(0, 0);
+        } else if (location == SleeveDetection.ParkingPosition.LEFT) {
+            ga.encodeTo(-10000, 0);
+        } else {
+            ga.encodeTo(10000, 0);
+        }
+
         while (opModeIsActive()){
             telemetry.addData(ga.telemetric(), "");
             telemetry.update();
         }
+
+//                    Horizontal.disable();
+//                    drive.followTrajectory(pink);
 //        if (isStopRequested()) {
 //            sl.setPower(0.4);
 //            sr.setPower(0.4);
