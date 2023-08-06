@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.firstinspires.ftc.teamcode.GabrielAlimovMovementLibrary.GAmovement;
+//import org.firstinspires.ftc.teamcode.GabrielAlimovMovementLibrary.GAmovement;
 
 @Autonomous
 public class odoTest extends LinearOpMode {

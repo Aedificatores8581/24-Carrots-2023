@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.teamcode.GabrielAlimovMovementLibrary.GAtest;
 
+@Disabled
 public class AutoTest extends LinearOpMode {
     static DcMotorEx fl;
     static DcMotorEx fr;
@@ -34,6 +36,7 @@ public class AutoTest extends LinearOpMode {
 class funnyClass {
 
 }
+@Disabled
 class AutoBuider extends GAtest {
     AutoTest t = new AutoTest();
 
