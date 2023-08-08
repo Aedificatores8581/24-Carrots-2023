@@ -12,8 +12,8 @@ public abstract class GAmovement {
     DcMotorEx bl;
     DcMotorEx br;
     IMU Imu;
-    GAstate s = new GAstate();
-    GAlocalization localization;
+   // GAstate s = new GAstate();
+   // GAlocalization localization;
     int substate = 0;
     int substateGoal = 0;
     int ticksThisState = 0;
@@ -25,7 +25,7 @@ public abstract class GAmovement {
         bl = back_left;
         br = back_right;
         Imu = imu;
-        localization = new GAlocalization(imu, X_axis_odometer, Y_axis_odometer);
+ //       localization = new GAlocalization(imu, X_axis_odometer, Y_axis_odometer);
     }
     public boolean autoConstructor (final int t) {
         return true;
@@ -43,7 +43,12 @@ public abstract class GAmovement {
     public final void update () {
         if (substate == substateGoal) {
             state ++;
+            ticksThisState = 0;
         }
         autoConstructor(state);
+        ticksThisState ++;
+    }
+    public final int getTicks () {
+        return ticksThisState;
     }
 }

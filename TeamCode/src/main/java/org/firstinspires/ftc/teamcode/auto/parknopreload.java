@@ -40,18 +40,20 @@ public class parknopreload extends LinearOpMode {
         claw = hardwareMap.get(Servo.class, "claw");
         GAprimitive ga = new GAprimitive(hardwareMap);
 
-        OpenCvCamera phoneCam;
-        int width = 320;
-        int height = 240;
+//        OpenCvCamera phoneCam;
+//        int width = 320;
+//        int height = 240;
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        phoneCam.openCameraDevice();
-        phoneCam.setPipeline(detector);
-        phoneCam.startStreaming(width, height, OpenCvCameraRotation.SIDEWAYS_LEFT);
+//        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+//        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+//        phoneCam.openCameraDevice();
+//        phoneCam.setPipeline(detector);
+//        phoneCam.startStreaming(width, height, OpenCvCameraRotation.SIDEWAYS_LEFT);
 
         waitForStart();
-        SleeveDetection.ParkingPosition location = detector.getPosition();
+
+        ga.encodeTo(1892, 0);
+/*        SleeveDetection.ParkingPosition location = detector.getPosition();
 
         phoneCam.stopStreaming();
 
@@ -72,8 +74,10 @@ public class parknopreload extends LinearOpMode {
             telemetry.addData("left", location);
             telemetry.addLine(ga.telemetric());
             telemetry.update();
-        }
 
-        while (!isStopRequested()) {}
+ */
+        //}
+
+//        while (!isStopRequested()) {}
     }
 }
