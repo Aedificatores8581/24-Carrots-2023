@@ -13,6 +13,7 @@ public class GA extends LinearOpMode {
         waitForStart();
         while (!isStopRequested()) {
             move.update();
+            telemetry.update();
         }
     }
     public void Tele (String string) {
