@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.BatteryChecker;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
@@ -34,10 +35,10 @@ public class GAprimitive {
         br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         bl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         br.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters imuParameters = new IMU.Parameters(
@@ -71,9 +72,9 @@ public class GAprimitive {
         while (Math.abs(forward) > Math.abs(yOdo.getCurrentPosition())-Yadjustment || Math.abs(strafe) > Math.abs(xOdo.getCurrentPosition())-Xadjustment) {
             if (Math.abs(forward) > Math.abs(yOdo.getCurrentPosition())-Yadjustment && forward != 0) {
                 if (fNegative) {
-                    Y = 0.5;
+                    Y = 1;
                 } else {
-                    Y = -0.5;
+                    Y = -1;
                 }
             } else {
                 Y = 0;
@@ -81,9 +82,9 @@ public class GAprimitive {
             Ytracker += Y * 2;
             if (Math.abs(strafe) > Math.abs(xOdo.getCurrentPosition())-Xadjustment && strafe != 0) {
                 if (sNegative) {
-                    X = 0.5;
+                    X = 1;
                 } else {
-                    X = -0.5;
+                    X = -1;
                 }
             } else {
                 X = 0;

@@ -52,7 +52,7 @@ public class parknopreload extends LinearOpMode {
 
         waitForStart();
 
-        ga.encodeTo(1892, 0);
+        ga.encodeTo(1892*20, 0);
 /*        SleeveDetection.ParkingPosition location = detector.getPosition();
 
         phoneCam.stopStreaming();
