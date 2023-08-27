@@ -18,6 +18,7 @@ public class GA extends LinearOpMode {
         waitForStart();
         while (!isStopRequested()) {
             move.update();
+            telemetry.addLine(move.telemetryData());
             telemetry.update();
         }
     }
@@ -27,29 +28,14 @@ public class GA extends LinearOpMode {
 }
 
 class Move extends GAmovement {
-    GA l = new GA();
-    DcMotorEx fl;
-    DcMotorEx fr;
-    DcMotorEx bl;
-    DcMotorEx br;
-    int state = getState();
-    int ticks = getTicks();
     public boolean autoConstructor (int t) {
         switch (t) {
             case 0:
-               parabola(1892*20, 0, 0.3);
+               ADMove(-18920, -3800, 0.5);
                break;
             default:
-                telem = "nope";
                 break;
         }
         return true;
-    }
-    public void Telemetry (String string) {
-        synchronize();
-        if (getTicks() == 100000) {
-            complete();
-        }
-        telem = string;
     }
 }

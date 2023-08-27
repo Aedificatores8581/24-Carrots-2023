@@ -20,6 +20,8 @@ public abstract class GAmovement {
     DcMotorEx bl;
     DcMotorEx br;
     IMU Imu;
+    DcMotorEx Xodo;
+    DcMotorEx Yodo;
    //`   GAstate s = new GAstate();
    // GAlocalization localization;
     int substate = 0;
@@ -31,18 +33,30 @@ public abstract class GAmovement {
     int speedS = 0;
     int startDistF = 0;
     int startDistS = 0;
-    int fnegative;
-    int snegative;
     int targetDistF;
     int targetDistS;
     int distanceToDecelF;
     int distanceToDecelS;
+
+    final double A = 0.2;
+    final double N = 1.7;
+    double Ef = 0;
+    double Es = 0;
+    int D = 3000;
+    double Cf = 0;
+    double Cs = 0;
+    boolean deceleratingf = false;
+    boolean deceleratings = false;
+    int fnegative = 1;
+    int snegative = 1;
     public final void GAtestInit (DcMotorEx front_left, DcMotorEx front_right, DcMotorEx back_left, DcMotorEx back_right, IMU imu, DcMotorEx X_axis_odometer, DcMotorEx Y_axis_odometer) {
         fl = front_left;
         fr = front_right;
         bl = back_left;
         br = back_right;
         Imu = imu;
+        Xodo = X_axis_odometer;
+        Yodo = Y_axis_odometer;
  //       localization = new GAlocalization(imu, X_axis_odometer, Y_axis_odometer);
     }
     public boolean autoConstructor (final int t) {
@@ -52,10 +66,12 @@ public abstract class GAmovement {
     public final void complete () {
         substate ++;
     }
-    public final void synchronize () {
+    public final boolean synchronize () {
         if (ticksThisState == 0) {
             substateGoal ++;
+            return true;
         }
+        return false;
     }
 
     public final void update () {
@@ -130,8 +146,8 @@ public abstract class GAmovement {
         bl = r.get(DcMotorEx.class, "back left");
         br = r.get(DcMotorEx.class, "back right");
 
-        fr.setDirection(DcMotorSimple.Direction.REVERSE);
-        br.setDirection(DcMotorSimple.Direction.REVERSE);
+        fl.setDirection(DcMotorSimple.Direction.REVERSE);
+        bl.setDirection(DcMotorSimple.Direction.REVERSE);
         fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         fl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -144,5 +160,89 @@ public abstract class GAmovement {
         fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        Xodo = bl;
+        Yodo = fl;
+    }
+    public final void ADMove (int forward, int strafe, double targetSpeed) {
+        double Sf = 0;
+        double Ss = 0;
+        int Y = -Yodo.getCurrentPosition();
+        int X = -Xodo.getCurrentPosition();
+        if (forward < 0) {
+            fnegative = -1;
+        }
+        if (strafe < 0) {
+            snegative = -1;
+        }
+        if (strafe == 0) {
+            Ss = 0;
+        } else {
+            Ss = 0.1*snegative;
+        }
+        if (forward == 0) {
+            Sf = 0;
+        } else {
+            Sf = 0.1*fnegative;
+        }
+        if (synchronize()) {
+            Ef = Y + forward;
+            Es = X + strafe;
+            deceleratingf = false;
+            deceleratings = false;
+        } else {
+            //forward math
+            if (!deceleratingf) {
+                Sf = Math.min(Math.pow(Math.abs(Cf), Math.abs(A)), Math.abs(targetSpeed))*fnegative;
+                if (Math.abs(Ef - Y) <= D) {
+                    deceleratingf = true;
+                }
+            } else {
+                Sf = Math.max(Math.pow(Math.abs(Cf), Math.abs(N)), 0)*fnegative;
+            }
+            //strafe math
+            if (!deceleratings) {
+                Ss = Math.min(Math.pow(Math.abs(Cs), Math.abs(A)), Math.abs(targetSpeed))*snegative;
+                if (Math.abs(Es - X) <= D) {
+                    deceleratings = true;
+                }
+            } else {
+                Ss = Math.max(Math.pow(Math.abs(Cs), Math.abs(N)), 0)*snegative;
+            }
+        }
+        if (Ss >= 1) {
+            Ss = 0.99;
+        }
+        if (Ss <= -1) {
+            Ss = -0.99;
+        }
+        if (Sf >= 1) {
+            Sf = 0.99;
+        }
+        if (Sf <= -1) {
+            Sf = -0.99;
+        }
+        Cs = Ss;
+        Cf = Sf;
+        fl.setPower(Cf + Cs);
+        bl.setPower(Cf - Cs);
+        fr.setPower(Cf - Cs);
+        br.setPower(Cf + Cs);
+        if (Ss == 0 && Sf == 0) {
+            complete();
+        }
+        telem =
+                "Forward position: " + Y +
+                "\nStrafe Position: " + X +
+                "\nForward speed: " + Cf +
+                "\nStrafe speed: " + Cs +
+                "\nForward decel: " + deceleratingf +
+                "\nStrafe decel: " + deceleratings +
+                "\nForward end: " + Ef +
+                "\nStrafe end: " + Es
+        ;
+    }
+    public final String telemetryData () {
+        return telem;
     }
 }
