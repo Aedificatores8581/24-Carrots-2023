@@ -2,10 +2,6 @@ package org.firstinspires.ftc.teamcode.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.GabrielAlimovMovementLibrary.GAmovement;
 
@@ -18,13 +14,10 @@ public class GA extends LinearOpMode {
         waitForStart();
         while (!isStopRequested()) {
             move.update();
-            telemetry.addLine(move.telemetryData());
+            telemetry.addLine(move.DistData());
             telemetry.update();
         }
     }
-//    public void Tele (String string) {
-//        telemetry.addLine(string);
-//    }
 }
 
 class Move extends GAmovement {

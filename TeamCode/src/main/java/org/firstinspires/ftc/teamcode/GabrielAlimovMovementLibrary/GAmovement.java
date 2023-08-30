@@ -9,7 +9,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ReadWriteFile;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class GAmovement {
     String telem = "";
@@ -241,8 +245,48 @@ public abstract class GAmovement {
                 "\nForward end: " + Ef +
                 "\nStrafe end: " + Es
         ;
+        DistDataManager(Cf, X);
     }
     public final String telemetryData () {
         return telem;
+    }
+    double prevSpeed;
+    ArrayList<Integer> dists = new ArrayList<>();
+    AvgSpeed average;
+    private double calculateAverage(List<Integer> ds) {
+        return ds.stream()
+                .mapToDouble(d -> d)
+                .average()
+                .orElse(0.0);
+    }
+    private void DistDataManager (double speed, int distance) {
+        if (prevSpeed == speed) {
+            dists.add(distance);
+        } else {
+            dists.clear();
+        }
+        average = new AvgSpeed(dists.size(), speed, calculateAverage(dists));
+    }
+    public final String DistData () {
+        return "Speed: " + average.currentSpeed + "\nLoop: " + average.loopsThisSpeed + "\nAverage distance for this speed: " + average.avgDistancePerLoop;
+    }
+}
+class AvgSpeed {
+    public int loopsThisSpeed;
+    public double currentSpeed;
+    public double avgDistancePerLoop;
+    public AvgSpeed (int Loop, double CurrentSpeed, double Average) {
+        loopsThisSpeed = Loop;
+        currentSpeed = CurrentSpeed;
+        avgDistancePerLoop = Average;
+    }
+    public int LoopsThisSpeed() {
+        return loopsThisSpeed;
+    }
+    public double CurrentSpeed () {
+        return currentSpeed;
+    }
+    public double AverageDistancePerLoop () {
+        return avgDistancePerLoop;
     }
 }
