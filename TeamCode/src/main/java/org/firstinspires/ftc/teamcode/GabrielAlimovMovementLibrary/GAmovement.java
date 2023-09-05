@@ -39,20 +39,25 @@ public abstract class GAmovement {
     int startDistS = 0;
     int targetDistF;
     int targetDistS;
-    int distanceToDecelF;
+    int[] distanceToDecelF = {0, 210, 430, 770, 790, 1200, 1300, 1760, 1800, 2000};
     int distanceToDecelS;
 
     final double A = 0.2;
     final double N = 1.7;
     double Ef = 0;
     double Es = 0;
-    int D = 3000;
+    //!!USE ADDITION!!//
+    int[] D = {0, 210*10, 430*10, 770*20, 790*25, 1200*100, 1300*100, 1760*150, 1800*200, 2000*300};
     double Cf = 0;
     double Cs = 0;
     boolean deceleratingf = false;
     boolean deceleratings = false;
     int fnegative = 1;
     int snegative = 1;
+    int stuckcountX = 0;
+    int stuckdisttrackerX = 0;
+    int stuckcountY = 0;
+    int stuckdisttrackerY = 0;
     public final void GAtestInit (DcMotorEx front_left, DcMotorEx front_right, DcMotorEx back_left, DcMotorEx back_right, IMU imu, DcMotorEx X_axis_odometer, DcMotorEx Y_axis_odometer) {
         fl = front_left;
         fr = front_right;
@@ -92,7 +97,7 @@ public abstract class GAmovement {
     public final int getTicks () {
         return ticksThisState;
     }
-    public final void parabola (int forward, int strafe, double TargetSpeed) {
+/*    public final void parabola (int forward, int strafe, double TargetSpeed) {
         synchronize();
         int yesorno = 0;
         if (ticksThisState == 0) {
@@ -118,8 +123,7 @@ public abstract class GAmovement {
             File log = new File("logFile.txt");
             ReadWriteFile.writeFile(log, "blah blah blah");
         }
-        distanceToDecelF = speedF*10*inch;
-        distanceToDecelS = speedS*10*inch;
+        distanceToDecelS = 500;
         if (targetDistF - bl.getCurrentPosition() >= distanceToDecelF) {
             speedF -= 0.5*fnegative;
         } else if ((fnegative == -1 && bl.getCurrentPosition() > targetDistF) || (fnegative == 1 && bl.getCurrentPosition() < targetDistF) && speedF < TargetSpeed) {
@@ -142,7 +146,7 @@ public abstract class GAmovement {
         bl.setPower(speedF - speedS);
         fr.setPower(speedF - speedS);
         br.setPower(speedF + speedS);
-    }
+    } */
     public final void Map (HardwareMap r) {
         map = r;
         fl = r.get(DcMotorEx .class, "front left");
@@ -198,7 +202,7 @@ public abstract class GAmovement {
             //forward math
             if (!deceleratingf) {
                 Sf = Math.min(Math.pow(Math.abs(Cf), Math.abs(A)), Math.abs(targetSpeed))*fnegative;
-                if (Math.abs(Ef - Y) <= D) {
+                if (Math.abs(Ef - Y) <= D[(int) (Sf*10)]) {
                     deceleratingf = true;
                 }
             } else {
@@ -207,7 +211,7 @@ public abstract class GAmovement {
             //strafe math
             if (!deceleratings) {
                 Ss = Math.min(Math.pow(Math.abs(Cs), Math.abs(A)), Math.abs(targetSpeed))*snegative;
-                if (Math.abs(Es - X) <= D) {
+                if (Math.abs(Es - X) <= D[(int) (Ss*10)]) {
                     deceleratings = true;
                 }
             } else {
@@ -245,7 +249,28 @@ public abstract class GAmovement {
                 "\nForward end: " + Ef +
                 "\nStrafe end: " + Es
         ;
-        DistDataManager(Cf, X);
+        DistDataManager(Cf, Y);
+
+        //obstacle failsafe:
+        if (Math.abs(X) - stuckdisttrackerX < 100 && forward > 0.1) {
+            stuckcountX ++;
+        } else {
+            stuckcountX = 0;
+        }
+        if (stuckcountX >= 15) {
+            deceleratingf = true;
+            telem = "Stuck (forward)!";
+        }
+
+        if (Math.abs(Y) - stuckdisttrackerY < 100 && strafe > 0.1) {
+            stuckcountY ++;
+        } else {
+            stuckcountY = 0;
+        }
+        if (stuckcountY >= 15) {
+            deceleratings = true;
+            telem = "Stuck (strafe)!";
+        }
     }
     public final String telemetryData () {
         return telem;
@@ -259,12 +284,16 @@ public abstract class GAmovement {
                 .average()
                 .orElse(0.0);
     }
+    int prevDist;
     private void DistDataManager (double speed, int distance) {
         if (prevSpeed == speed) {
-            dists.add(distance);
+            dists.add(distance - prevDist);
+            prevDist = distance;
         } else {
             dists.clear();
+            prevDist = 0;
         }
+        prevSpeed = speed;
         average = new AvgSpeed(dists.size(), speed, calculateAverage(dists));
     }
     public final String DistData () {

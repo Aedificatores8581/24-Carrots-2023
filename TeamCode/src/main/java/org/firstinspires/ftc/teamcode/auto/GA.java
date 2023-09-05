@@ -14,7 +14,7 @@ public class GA extends LinearOpMode {
         waitForStart();
         while (!isStopRequested()) {
             move.update();
-            telemetry.addLine(move.DistData());
+            telemetry.addLine(move.telemetryData());
             telemetry.update();
         }
     }
@@ -24,7 +24,7 @@ class Move extends GAmovement {
     public boolean autoConstructor (int t) {
         switch (t) {
             case 0:
-               ADMove(-18920, -3800, 0.5);
+               ADMove(189200, 0, 0.2);
                break;
             default:
                 break;
