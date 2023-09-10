@@ -47,7 +47,7 @@ public abstract class GAmovement {
     double Ef = 0;
     double Es = 0;
     //!!USE ADDITION!!//
-    int[] D = {0, 210*10, 430*10, 770*20, 790*25, 1200*100, 1300*100, 1760*150, 1800*200, 2000*300};
+    int[] D = {0, 100, 2000, 4900, 7400, 9800, 12800, 15700, 20900, 26600};
     double Cf = 0;
     double Cs = 0;
     boolean deceleratingf = false;
@@ -252,7 +252,7 @@ public abstract class GAmovement {
         DistDataManager(Cf, Y);
 
         //obstacle failsafe:
-        if (Math.abs(X) - stuckdisttrackerX < 100 && forward > 0.1) {
+        if (Math.abs(X) - stuckdisttrackerX < 50 && !(forward > 0.1)) {
             stuckcountX ++;
         } else {
             stuckcountX = 0;
@@ -262,7 +262,7 @@ public abstract class GAmovement {
             telem = "Stuck (forward)!";
         }
 
-        if (Math.abs(Y) - stuckdisttrackerY < 100 && strafe > 0.1) {
+        if (Math.abs(Y) - stuckdisttrackerY < 50 && !(strafe > 0.1)) {
             stuckcountY ++;
         } else {
             stuckcountY = 0;
@@ -270,6 +270,13 @@ public abstract class GAmovement {
         if (stuckcountY >= 15) {
             deceleratings = true;
             telem = "Stuck (strafe)!";
+        }
+
+        if (Math.abs(Y) >= Ef) {
+            deceleratingf = true;
+        }
+        if (Math.abs(X) >= Es) {
+            deceleratings = true;
         }
     }
     public final String telemetryData () {

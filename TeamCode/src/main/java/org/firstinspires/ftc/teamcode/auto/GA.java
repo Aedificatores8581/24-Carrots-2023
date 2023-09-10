@@ -24,7 +24,7 @@ class Move extends GAmovement {
     public boolean autoConstructor (int t) {
         switch (t) {
             case 0:
-               ADMove(189200, 0, 0.2);
+               ADMove(189200, 0, 0.9);
                break;
             default:
                 break;
